@@ -1,0 +1,119 @@
+
+<!DOCTYPE html>
+<html lang="">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>Weather App</title>
+
+        <!-- Bootstrap CSS -->
+        <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
+
+        <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+        <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+        <!--[if lt IE 9]>
+            <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.3/html5shiv.js"></script>
+            <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+        <![endif]-->
+        <link rel="stylesheet" href="style.css">
+    </head>
+    <body>
+        <div class="card">
+            <div class="search">
+              <input type="text" placeholder="Enter city name" spellcheck="false">       
+              <button style="margin-left: 2%;"><img src="images/search_icon.png"></button>     
+            </div>
+            <div class="Weather">
+              <img src="images/default.png" class="Weather-icon" style="width: 60%;height: 60%;">
+                <h4></h4>
+              <h1 class="temp">29ºC</h1>
+              <h2 class="city">Beed</h2>
+            </div>
+            <div class="details">
+                <div class="col">
+                    <img src="images/humidity.png">
+                <div>
+                  <p class="humidity">50%</p>
+                  <p>humidity</p>
+                </div>
+                </div>
+                <div class="col">
+                <img src="images/wind.png">
+            <div>
+                <p class="wind">15 km/hr</p>
+                <p>wind speed</p>
+            </div>
+            </div>
+            </div>
+            </div>
+            
+        <script>
+            const apiKey="1fef9d1d592028167c3cfecbb93e8c75";
+            const apiUrl="https://api.openweathermap.org/data/2.5/weather?units=metric&q=";      
+            const searchBox=document.querySelector(".search input");
+            const searchButton=document.querySelector(".search button");
+            async function checkWeather(city){
+                const respons=await fetch(apiUrl+city+`&appid=${apiKey}`);
+                var data=await respons.json();
+                console.log(data);
+                document.querySelector(".city").innerHTML=data.name;
+                document.querySelector(".temp").innerHTML=Math.round(data.main.temp)+"ºC";
+                document.querySelector(".humidity").innerHTML=data.main.humidity+"%";
+                document.querySelector(".wind").innerHTML=Math.round(data.wind.speed)+" km/hr";
+                const weatherMain = data.weather[0].main.toLowerCase(); // e.g., "clouds", "clear", "rain"
+                const weatherDescription = data.weather[0].description.toLowerCase();
+
+        if (weatherMain === "clear") {
+            document.querySelector(".Weather-icon").src = "images/sunny.png";
+        } else if (weatherMain === "clouds") {
+            document.querySelector(".Weather-icon").src = "images/cloudy.png";
+        } else if (weatherMain === "rain") {
+            document.querySelector(".Weather-icon").src = "images/rain1.png";
+        } else if (weatherMain === "snow") {
+            document.querySelector(".Weather-icon").src = "images/snow.png";
+        } else {
+            document.querySelector(".Weather-icon").src = "images/default.png"; // fallback icon
+        }
+
+            }
+            searchButton.addEventListener("click", () => {
+                if (searchBox.value.trim() !== "") {
+                    checkWeather(searchBox.value.trim());
+                } else {
+                    alert("Please enter a city name.");
+                }
+           });
+
+        // Keyup handler for Enter key on input box
+        searchBox.addEventListener("keyup", (event) => {
+            if (event.key === "Enter") {
+                searchButton.click();
+            }
+        });
+        const now = new Date();
+
+        const day = now.getDate();
+        const months = [
+            "January", "February", "March", "April", "May", "June",
+            "July", "August", "September", "October", "November", "December"
+        ];
+        const monthName = months[now.getMonth()];
+        const year = now.getFullYear();
+        let hours = now.getHours();
+        let minutes = now.getMinutes();
+        const ampm = hours >= 12 ? "PM" : "AM";
+        hours = hours % 12 || 12;
+        const timeString = `${day} ${monthName} ${year} , ${hours}:${minutes} ${ampm}`;
+        document.querySelector("h4").innerHTML=timeString;
+          window.addEventListener("load",()=>{
+            checkWeather("Beed");
+        });
+     
+        </script>
+        <!-- jQuery -->
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+        <!-- Bootstrap JavaScript -->
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    </body>
+</html>
